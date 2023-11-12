@@ -1,4 +1,5 @@
 import styled, { createGlobalStyle } from "styled-components";
+import 'react-toastify/dist/ReactToastify.css';
 import * as colors from "./colors";
 
 export default createGlobalStyle`
@@ -10,7 +11,7 @@ export default createGlobalStyle`
     }
 
     body {
-        font-family: sans-serif;
+        font-family: 'Nunito Sans', sans-serif;
         background: ${colors.mainBackgroundColor};
         color: ${colors.primaryDarkColor};
     }

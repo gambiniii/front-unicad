@@ -2,8 +2,10 @@ import styled from "styled-components";
 import * as colors from '../../styles/colors'
 
 export const Form = styled.form`
-    display: grid;
-    width: 80%;
+    width: 75%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
 
     label{
         display:flex;
@@ -25,7 +27,20 @@ export const Form = styled.form`
     }
 
     button{
-        margin-top: 1.5rem;
         height: 3rem;
+        width: 100%;
     }
+
+    div > div{
+    }
+`
+
+export const FlexDiv = styled.div`
+    display: flex;
+    justify-content: space-evenly;
+`
+
+export const GridDiv = styled.div`
+    display: grid;
+    align-items: start;
 `

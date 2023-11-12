@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { useLocation } from 'react-router-dom';
 import { get } from 'lodash'
-import { GoogleMap, Marker, LoadScript, DirectionsService, DirectionsRenderer, StandaloneSearchBox } from '@react-google-maps/api'
+import { GoogleMap, LoadScript, DirectionsService, DirectionsRenderer, StandaloneSearchBox } from '@react-google-maps/api'
 
 import { MapInput } from './styled';
 
 export default function Map(props) {
     const containerStyle = {
-        width: '400px',
-        height: '400px'
+        width: '30rem',
+        height: '30rem'
     }
 
     const center = {
@@ -16,21 +16,16 @@ export default function Map(props) {
         lng: -46.578886604151016
     }
 
-    let location = useLocation();
+    let entrega = get(useLocation(), 'state.entrega', null)
 
-    console.log(location)
+    const [origin, setOrigin] = useState(entrega ? entrega.ponto_partida : {})
+    const [destination, setDestination] = useState(entrega ? entrega.ponto_destino : {})
 
-
-    const [origin, setOrigin] = useState(get(location, 'state.entrega.ponto_partida', {}))
-    const [destination, setDestination] = useState(get(location, 'state.entrega.ponto_destino', {}))
+    const [originInput, setOriginInput] = useState(null)
+    const [destinationInput, setDestinationInput] = useState(null)
 
     const [map, setMap] = useState(null)
-    const [directionsService, setDirectionsService] = useState(null);
     const [response, setResponse] = useState(null)
-
-
-    const [originInput, setOriginInput] = useState()
-    const [destinationInput, setDestinationInput] = useState()
 
 
     function getCoordinates(coordinates) {
@@ -42,12 +37,9 @@ export default function Map(props) {
     }
 
 
-    const onOriginChanged = () => {
+    function onOriginChanged() {
         try {
-
             const places = originInput.getPlaces()
-            console.log(places)
-
 
             if (places.length > 0) {
                 let coordinates = {
@@ -58,6 +50,7 @@ export default function Map(props) {
                 setResponse(null)
                 setOrigin(null)
                 setOrigin(coordinates)
+                if (get(props, 'setPartida', false)) props.setPartida(`${coordinates.lat}, ${coordinates.lng}`)
             }
 
         } catch (error) {
@@ -65,12 +58,10 @@ export default function Map(props) {
         }
     }
 
-    const onDestinationChanged = () => {
+
+    function onDestinationChanged() {
         try {
-
             const places = destinationInput.getPlaces()
-            console.log(places)
-
 
             if (places.length > 0) {
                 let coordinates = {
@@ -81,6 +72,7 @@ export default function Map(props) {
                 setResponse(null)
                 setDestination(null)
                 setDestination(coordinates)
+                if (get(props, 'setDestino', false)) props.setDestino(`${coordinates.lat}, ${coordinates.lng}`)
             }
 
         } catch (error) {
@@ -89,30 +81,7 @@ export default function Map(props) {
     }
 
 
-    const onMapLoad = (map) => {
-        console.log(map)
-
-        const directionsServiceInstance = new window.google.maps.DirectionsService();
-        setDirectionsService(directionsServiceInstance);
-
-        getDistance(origin, destination)
-        generateRoute()
-
-
-        setMap(map)
-    }
-
-    const onOriginInputLoad = (box) => {
-        setOriginInput(box)
-    }
-
-
-    const onDestinationInputLoad = (box) => {
-        setDestinationInput(box)
-    }
-
-
-    const onUnmount = useCallback(function callback(map) {
+    const onUnmount = useCallback(() => {
         setMap(null)
     }, [])
 
@@ -125,11 +94,13 @@ export default function Map(props) {
         }
     }, [origin, destination])
 
+
     const directionsCallback = useCallback((res) => {
         if (res.status !== null && res.status === "OK") {
             setResponse(res)
         }
     }, [])
+
 
     const directionsRendererOptions = useMemo(() => {
         return {
@@ -138,70 +109,15 @@ export default function Map(props) {
     }, [response])
 
 
-    function generateRoute() {
-        try {
-            console.log(map)
-            if (!directionsService) {
-                console.error('DirectionsService não inicializado');
-                return;
-            }
-
-            if (origin, destination) {
-                directionsService.route(
-                    {
-                        origin: origin,
-                        destination: destination,
-                        travelMode: 'DRIVING'
-                    },
-                    callback
-                );
-            }
-
-            function callback(response, status) {
-                if (status === window.google.maps.DirectionsStatus.OK) {
-                    setResponse(response);
-                } else {
-                    console.log(response)
-                    console.log(status)
-                }
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-
-    function getDistance(origin, destination) {
-        const distanceService = new window.google.maps.DistanceMatrixService()
-
-        distanceService.getDistanceMatrix(
-            {
-                origins: [origin],
-                destinations: [destination],
-                travelMode: 'DRIVING',
-                avoidTolls: true,
-            },
-            callback
-        )
-
-        function callback(response, status) {
-            console.log(response)
-            console.log(status)
-        }
-    }
-
     useEffect(() => {
         try {
             console.log(origin)
             if (map) map.panTo(getCoordinates(origin))
-
-            if (destination) {
-
-            }
         } catch (error) {
             console.log(error)
         }
     }, [origin]);
+
 
     useEffect(() => {
         try {
@@ -211,6 +127,7 @@ export default function Map(props) {
             console.log(error)
         }
     }, [destination]);
+
 
     return (
         <div className='map'>
@@ -222,26 +139,34 @@ export default function Map(props) {
                 <GoogleMap
                     mapContainerStyle={containerStyle}
                     center={center}
-                    onUnmount={onUnmount}
-                    onLoad={onMapLoad}
                     zoom={15}
+                    onUnmount={onUnmount}
+                    onLoad={(map) => setMap(map)}
                 >
 
+                    {
+                        entrega
+                            ? null
+                            : <>
+                                <StandaloneSearchBox onLoad={(box) => setOriginInput(box)} onPlacesChanged={onOriginChanged}>
+                                    <MapInput
+                                        type="text"
+                                        placeholder="Local de partida"
+                                        disabled={get(props, 'loading', false)}
+                                    />
+                                </StandaloneSearchBox>
 
-                    <StandaloneSearchBox onLoad={onOriginInputLoad} onPlacesChanged={onOriginChanged}>
-                        <MapInput
-                            type="text"
-                            placeholder="Local de partida"
-                        />
-                    </StandaloneSearchBox>
+                                <StandaloneSearchBox onLoad={(box) => setDestinationInput(box)} onPlacesChanged={onDestinationChanged}>
+                                    <MapInput
+                                        type="text"
+                                        placeholder="Local de destino"
+                                        style={{ marginTop: '5rem' }}
+                                        disabled={get(props, 'loading', false)}
+                                    />
+                                </StandaloneSearchBox>
+                            </>
+                    }
 
-                    <StandaloneSearchBox onLoad={onDestinationInputLoad} onPlacesChanged={onDestinationChanged}>
-                        <MapInput
-                            type="text"
-                            placeholder="Local de destino"
-                            style={{ marginTop: '5rem' }}
-                        />
-                    </StandaloneSearchBox>
 
                     {
                         origin && destination && (

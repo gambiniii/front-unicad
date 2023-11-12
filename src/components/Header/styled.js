@@ -7,16 +7,18 @@ export const Nav = styled.nav`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
 
     a{
         display: flex;
         align-items: center;
         margin: 0 5rem 0 0;
         color: #fff;
-        font-weight: bold;
+        font-weight: 100;
 
         span{
             margin-right: 0.5rem;
+            font-size: 1.5rem;
         }
     }
     
