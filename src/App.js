@@ -1,4 +1,5 @@
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
 import { BrowserRouter } from "react-router-dom";
 
 import Header from './components/Header/header';
@@ -13,6 +14,7 @@ function App() {
       <Header />
       <Router />
       <GlobalSyles />
+      <ToastContainer autoClose={3000} className="toast-container" />
     </BrowserRouter>
   );
 }

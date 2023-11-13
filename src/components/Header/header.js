@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { TbTruckDelivery, TbHome, TbWorld } from 'react-icons/tb'
+import { PiHouseLight, PiTruckLight, PiGlobeLight } from 'react-icons/pi'
+import { GoHome, GoGlobe } from 'react-icons/go'
 
 import Logo from '../../svg/grupoUnicadLogo.svg'
 import { Nav } from "./styled";
@@ -11,17 +13,17 @@ export default function Header() {
             <div>
                 <Link to="/">
                     <span> Página Inicial </span>
-                    <TbHome size={28} />
+                    <PiHouseLight size={30} />
                 </Link>
 
                 <Link to="/entregas">
                     <span> Entregas </span>
-                    <TbTruckDelivery size={28} />
+                    <PiTruckLight size={30} />
                 </Link>
 
                 <Link to="/mapa">
                     <span> Mapa </span>
-                    <TbWorld size={28} />
+                    <PiGlobeLight size={30} />
                 </Link>
             </div>
 

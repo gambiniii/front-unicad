@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { PiListMagnifyingGlassBold } from 'react-icons/pi'
 
-import { Table, TableContainer } from './styled'
+import { Table, TableContainer, Title } from './styled'
 import { Container } from "../../styles/GlobalSyles"
 import axios from "../../services/axios"
 
@@ -33,34 +34,46 @@ export default function ListaEntregas() {
         navigate('mapa', { state: { entrega } })
     }
 
+    function createDate(timestamp) {
+        const date = new Date(timestamp);
+
+        const dia = date.getDate();
+        const mes = date.getMonth() + 1;
+        const ano = date.getFullYear();
+
+        const diaFormatado = dia < 10 ? `0${dia}` : dia;
+        const mesFormatado = mes < 10 ? `0${mes}` : mes;
+
+        return `${diaFormatado}/${mesFormatado}/${ano}`;
+    }
+
+
     return (
         <Container>
-            <h1>Lista Entregas</h1>
+            <Title>Lista de Entregas</Title>
 
             <TableContainer>
                 <Table>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Partida</th>
-                            <th>Destino</th>
-                            <th>Editar</th>
+                            <th>Nome do Cliente</th>
+                            <th>Data da Entrega</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             entregas.map(
                                 (entrega) => {
-                                    console.log(entrega)
                                     return (
                                         <tr>
-                                            <td>{entrega.id}</td>
                                             <td>{entrega.nome_cliente}</td>
-                                            <td>{entrega.ponto_partida}</td>
-                                            <td>{entrega.ponto_destino}</td>
+                                            <td>{createDate(entrega.data_entrega)}</td>
                                             <td>
-                                                <button onClick={() => handleClick(entrega)}>Editar</button>
+                                                <button onClick={() => handleClick(entrega)}>
+                                                    <span>Detalhes</span>
+                                                    <PiListMagnifyingGlassBold />
+                                                </button>
                                             </td>
                                         </tr>
                                     )
