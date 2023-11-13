@@ -1,8 +1,8 @@
 import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { PiListMagnifyingGlassBold } from 'react-icons/pi'
+import { Link, useNavigate } from "react-router-dom"
+import { PiListMagnifyingGlassBold, PiWarningThin } from 'react-icons/pi'
 
-import { Table, TableContainer, Title } from './styled'
+import { Table, TableContainer, Title, Grid } from './styled'
 import { Container } from "../../styles/GlobalSyles"
 import axios from "../../services/axios"
 
@@ -52,37 +52,46 @@ export default function ListaEntregas() {
         <Container>
             <Title>Lista de Entregas</Title>
 
-            <TableContainer>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Nome do Cliente</th>
-                            <th>Data da Entrega</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            entregas.map(
-                                (entrega) => {
-                                    return (
-                                        <tr>
-                                            <td>{entrega.nome_cliente}</td>
-                                            <td>{createDate(entrega.data_entrega)}</td>
-                                            <td>
-                                                <button onClick={() => handleClick(entrega)}>
-                                                    <span>Detalhes</span>
-                                                    <PiListMagnifyingGlassBold />
-                                                </button>
-                                            </td>
-                                        </tr>
+            {
+                entregas.length > 0
+                    ? <TableContainer>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Nome do Cliente</th>
+                                    <th>Data da Entrega</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    entregas.map(
+                                        (entrega) => {
+                                            return (
+                                                <tr>
+                                                    <td>{entrega.nome_cliente}</td>
+                                                    <td>{createDate(entrega.data_entrega)}</td>
+                                                    <td>
+                                                        <button onClick={() => handleClick(entrega)}>
+                                                            <span>Detalhes</span>
+                                                            <PiListMagnifyingGlassBold />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        }
                                     )
                                 }
-                            )
-                        }
-                    </tbody>
-                </Table>
-            </TableContainer>
+                            </tbody>
+                        </Table>
+                    </TableContainer>
+
+                    : <Grid>
+                        <PiWarningThin size={200} color="#aaa" />
+                        <p>Parece que não há nenhuma entrega a ser visualizada <br /> Cadastre uma nova entrega <Link to="/entregas">aqui</Link></p>
+                    </Grid>
+            }
+
 
         </Container>
     )

@@ -68,3 +68,16 @@ export const Title = styled.h1`
     justify-self: start;
     color: #2CC6F5 !important;
 `
+
+export const Grid = styled.div`
+    display: grid;
+    justify-items: center;
+    align-items: start;
+    text-align: center;
+
+        a{
+            color:  ${colors.secondaryColor};
+            font-weight: bold;
+        }
+    
+`

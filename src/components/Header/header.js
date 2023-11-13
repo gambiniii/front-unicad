@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { TbTruckDelivery, TbHome, TbWorld } from 'react-icons/tb'
 import { PiHouseLight, PiTruckLight, PiGlobeLight } from 'react-icons/pi'
-import { GoHome, GoGlobe } from 'react-icons/go'
 
 import Logo from '../../svg/grupoUnicadLogo.svg'
 import { Nav } from "./styled";
