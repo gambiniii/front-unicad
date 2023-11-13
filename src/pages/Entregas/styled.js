@@ -20,6 +20,8 @@ export const Form = styled.form`
         padding: 0 10px;
         border-radius: 4px;
         transition: 0.3s;
+        color: #666;
+        font-weight: 100 !important;
 
         &:focus{
             border: 1px solid ${colors.primaryColor};
@@ -43,4 +45,12 @@ export const FlexDiv = styled.div`
 export const GridDiv = styled.div`
     display: grid;
     align-items: start;
+`
+
+export const Title = styled.h1`
+    font-size: 3rem;
+    margin-top: 3rem;
+    font-weight: lighter;
+    justify-self: start;
+    color: #2CC6F5 !important;
 `
