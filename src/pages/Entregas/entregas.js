@@ -1,22 +1,27 @@
 import React, { useState } from "react"
 import { toast } from "react-toastify"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 
 import Map from '../../components/Map/map'
 import { Container } from "../../styles/GlobalSyles"
-import { Form, GridDiv } from "./styled"
+import { Form, GridDiv, Title } from "./styled"
 import { get } from "lodash"
 import axios from "../../services/axios"
 
 export default function Entregas() {
-    const [nome, setNome] = useState("")
-    const [dataEntrega, setDataEntrega] = useState("")
-    const [partida, setPartida] = useState("")
-    const [destino, setDestino] = useState("")
+    const entrega = get(useLocation(), 'state.entrega', null)
+
+    const [nome, setNome] = useState(entrega ? entrega.nome_cliente : "")
+    const [dataEntrega, setDataEntrega] = useState(entrega ? createDate(entrega.data_entrega) : "")
+    const [partida, setPartida] = useState(entrega ? entrega.ponto_entrega : "")
+    const [destino, setDestino] = useState(entrega ? entrega.destino_entrega : "")
 
     const [loading, setLoading] = useState(false)
 
+    const navigate = useNavigate()
+
     async function handleSubmit(event) {
+        if (entrega) return false
         const requestToast = toast.loading("Por favor, aguarde")
 
         let toastContent = {
@@ -47,6 +52,7 @@ export default function Entregas() {
                             autoClose: 3000
                         }
 
+                        return navigate('/')
                     })
             }
 
@@ -144,24 +150,42 @@ export default function Entregas() {
         return true
     }
 
+    function createDate(timestamp) {
+        const date = new Date(timestamp);
+
+        const dia = date.getDate();
+        const mes = date.getMonth() + 1;
+        const ano = date.getFullYear();
+
+        const diaFormatado = dia < 10 ? `0${dia}` : dia;
+        const mesFormatado = mes < 10 ? `0${mes}` : mes;
+
+        return `${ano}-${mesFormatado}-${diaFormatado}`;
+    }
+
+
     return (
         <Container>
             <Form>
                 <GridDiv>
                     <GridDiv>
-                        <h1>Realizar entrega</h1>
+                        <Title>{!entrega ? "Realizar entrega" : "Detalhes da entrega"}</Title>
 
                         <label>Nome do cliente</label>
-                        <input type="text" name="nome" value={nome} disabled={loading} onChange={(e) => setNome(e.target.value)} />
+                        <input type="text" name="nome" value={nome} disabled={loading || entrega} onChange={(e) => setNome(e.target.value)} />
 
                         <label>Data entrega</label>
-                        <input type="date" name="data" value={dataEntrega} disabled={loading} onChange={(e) => setDataEntrega(e.target.value)} />
+                        <input type="date" name="data" value={dataEntrega} disabled={loading || entrega} onChange={(e) => setDataEntrega(e.target.value)} />
                     </GridDiv>
 
-                    <button type="button" onClick={handleSubmit}>Entregar</button>
+                    {
+                        !entrega
+                            ? <button type="button" onClick={handleSubmit}>Entregar</button>
+                            : <button type="button" onClick={() => navigate('/')}>Voltar</button>
+                    }
                 </GridDiv>
 
-                <Map setPartida={setPartida} setDestino={setDestino} loading={loading} />
+                <Map setPartida={setPartida} setDestino={setDestino} disabled={loading || entrega} />
             </Form>
 
         </Container>

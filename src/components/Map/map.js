@@ -7,8 +7,8 @@ import { MapInput } from './styled';
 
 export default function Map(props) {
     const containerStyle = {
-        width: '30rem',
-        height: '30rem'
+        width: '35rem',
+        height: '35rem'
     }
 
     const center = {
@@ -152,7 +152,7 @@ export default function Map(props) {
                                     <MapInput
                                         type="text"
                                         placeholder="Local de partida"
-                                        disabled={get(props, 'loading', false)}
+                                        disabled={get(props, 'disabled', false)}
                                     />
                                 </StandaloneSearchBox>
 
@@ -161,7 +161,7 @@ export default function Map(props) {
                                         type="text"
                                         placeholder="Local de destino"
                                         style={{ marginTop: '5rem' }}
-                                        disabled={get(props, 'loading', false)}
+                                        disabled={get(props, 'disabled', false)}
                                     />
                                 </StandaloneSearchBox>
                             </>

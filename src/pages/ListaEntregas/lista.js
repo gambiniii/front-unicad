@@ -31,7 +31,7 @@ export default function ListaEntregas() {
     function handleClick(entrega) {
         console.log(entrega)
 
-        navigate('mapa', { state: { entrega } })
+        navigate('entregas', { state: { entrega } })
     }
 
     function createDate(timestamp) {
