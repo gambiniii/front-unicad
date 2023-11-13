@@ -160,7 +160,7 @@ export default function Map(props) {
                                     <MapInput
                                         type="text"
                                         placeholder="Local de destino"
-                                        style={{ marginTop: '5rem' }}
+                                        style={{ marginTop: '7rem' }}
                                         disabled={get(props, 'disabled', false)}
                                     />
                                 </StandaloneSearchBox>
